@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Course Finder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #161a3d;
+    --muted: #5a6086;
+    --line: #dde1f1;
+    --paper: #ffffff;
+    --wash: #f1f3fb;
+    --cobalt: #2438f0;
+    --marigold: #ffb81c;
+    --marigold-soft: #fff3d1;
+    --display: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { color-scheme: light; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.55 var(--body); }
+  :focus-visible { outline: 3px solid var(--marigold); outline-offset: 3px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 16px 16px 48px; }
+
+  /* The headline is the input: people finish the sentence. */
+  .ask { background: var(--cobalt); color: #fff; border-radius: 24px; padding: clamp(24px, 5vw, 48px); }
+  .ask h1 { margin: 0; }
+  .lead, .ask input[type="text"] {
+    font: 700 clamp(30px, 6vw, 56px)/1.1 var(--display);
+    letter-spacing: -0.02em;
+  }
+  .lead { display: block; }
+  .ask input[type="text"] {
+    display: block; width: 100%; margin-top: 4px; padding: 4px 0 10px;
+    background: transparent; color: #fff; border: 0; border-bottom: 4px solid var(--marigold); border-radius: 0;
+  }
+  .ask input[type="text"]::placeholder { color: rgba(255, 255, 255, .55); }
+  .ask input[type="text"]:focus-visible { outline: 3px solid #fff; outline-offset: 8px; border-bottom-color: #fff; }
+
+  .controls { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 26px; }
+  .go {
+    background: var(--marigold); color: var(--ink); border: 0; border-radius: 999px;
+    padding: 12px 26px; font: 600 17px var(--body); cursor: pointer;
+  }
+  .go:disabled { opacity: .65; cursor: progress; }
+  .levels { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .levels .label { font-size: 15px; color: rgba(255, 255, 255, .85); margin-right: 4px; }
+  .pill { position: relative; }
+  .pill input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .pill span {
+    display: inline-block; border: 1.5px solid rgba(255, 255, 255, .55); border-radius: 999px;
+    padding: 5px 14px; font-size: 15px;
+  }
+  .pill input:checked + span { background: #fff; color: var(--cobalt); border-color: #fff; font-weight: 600; }
+  .pill input:focus-visible + span { outline: 3px solid var(--marigold); outline-offset: 2px; }
+
+  .examples { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 22px; font-size: 15px; color: rgba(255, 255, 255, .85); }
+  .examples button {
+    background: rgba(255, 255, 255, .13); color: #fff; border: 0; border-radius: 999px;
+    padding: 6px 14px; font: inherit; cursor: pointer;
+  }
+  .examples button:hover { background: rgba(255, 255, 255, .25); }
+
+  /* Results: the best match is a feature block, the rest are a plain ranked list. */
+  #results { margin-top: 32px; }
+  .summary { font: 700 22px/1.25 var(--display); letter-spacing: -0.01em; margin: 0 0 18px; }
+  .top { border: 2px solid var(--ink); border-radius: 16px; padding: clamp(20px, 4vw, 32px); }
+  .row { padding: 24px 4px; border-top: 1px solid var(--line); }
+  .top + .row { margin-top: 12px; }
+  .c-title { font: 700 clamp(24px, 4vw, 32px)/1.15 var(--display); letter-spacing: -0.01em; margin: 0; }
+  .row .c-title { font-size: 22px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 2px 18px; margin: 8px 0 0; color: var(--muted); font-size: 15px; }
+  .meter { height: 8px; max-width: 340px; margin: 16px 0 4px; background: var(--wash); border-radius: 99px; overflow: hidden; }
+  .meter span {
+    display: block; height: 100%; background: var(--cobalt); transform-origin: left;
+    transform: scaleX(var(--s)); animation: fill .8s cubic-bezier(.2, .7, .2, 1) both;
+  }
+  @keyframes fill { from { transform: scaleX(0); } }
+  .match-label { font-size: 14px; color: var(--muted); }
+  .why { margin: 12px 0 0; font-weight: 500; }
+  .desc { margin: 8px 0 0; max-width: 62ch; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 14px 0 0; padding: 0; list-style: none; }
+  .chips li { background: var(--wash); border-radius: 999px; padding: 3px 12px; font-size: 14px; }
+  .chips li.hit { background: var(--marigold-soft); box-shadow: inset 0 0 0 1.5px var(--marigold); }
+  .careers { margin: 14px 0 0; font-size: 15px; color: var(--muted); }
+  .careers a { color: var(--cobalt); }
+  .actions { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 16px; }
+  .link {
+    background: none; border: 0; padding: 0; cursor: pointer; color: var(--cobalt);
+    font: 600 16px var(--body); text-decoration: underline; text-underline-offset: 3px;
+  }
+  .link:disabled { opacity: .6; cursor: progress; }
+  .similar { margin: 14px 0 0; padding: 14px 18px; background: var(--wash); border-radius: 12px; }
+  .similar[hidden] { display: none; }
+  .similar h4 { margin: 0 0 6px; font: 600 16px var(--body); }
+  .similar ul { margin: 0; padding-left: 20px; }
+  .similar li { margin: 2px 0; }
+  .similar .sub { color: var(--muted); }
+
+  .empty, .error { border-left: 6px solid var(--marigold); padding: 4px 0 4px 18px; }
+  .empty p:last-child, .error p:last-child { margin-bottom: 0; }
+  .note { margin: 40px 0 0; color: var(--muted); font-size: 14px; }
+
+  /* Tips: open before the first search, folded away after it. */
+  .tips { margin: 40px 0 0; padding-top: 20px; border-top: 1px solid var(--line); }
+  .tips summary {
+    display: flex; align-items: center; gap: 12px; cursor: pointer; list-style: none;
+    font: 700 22px/1.25 var(--display); letter-spacing: -0.01em;
+  }
+  .tips summary::-webkit-details-marker { display: none; }
+  .tips summary::before {
+    content: "+"; display: inline-grid; place-items: center; flex: none; width: 28px; height: 28px;
+    border-radius: 50%; background: var(--marigold); color: var(--ink); font: 700 18px/1 var(--body);
+  }
+  .tips[open] summary::before { content: "\2212"; }
+  .tips-list {
+    counter-reset: tip; list-style: none; margin: 20px 0 0; padding: 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px;
+  }
+  .tips-list li {
+    counter-increment: tip; background: var(--wash); border-radius: 14px; padding: 16px 18px;
+    font-size: 16px; line-height: 1.5; color: var(--muted);
+  }
+  .tips-list li::before {
+    content: counter(tip); display: inline-grid; place-items: center; width: 26px; height: 26px; margin-bottom: 8px;
+    border-radius: 50%; background: var(--cobalt); color: #fff; font: 700 14px var(--body);
+  }
+  .tips-list strong { display: block; color: var(--ink); font-weight: 600; margin-bottom: 2px; }
+
+  /* "Built with": tool buttons and their description panel */
+  .stack { margin: 40px 0 0; padding-top: 22px; border-top: 1px solid var(--line); }
+  .stack h2 { margin: 0; font: 600 14px var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .stack-hint { margin: 6px 0 14px; font-size: 14px; color: var(--muted); }
+  .tech-row { display: flex; flex-wrap: wrap; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .tech {
+    display: flex; align-items: center; gap: 10px; padding: 8px 16px 8px 10px; text-align: left; cursor: pointer;
+    background: var(--paper); color: var(--ink); border: 1.5px solid var(--line); border-radius: 14px; font: inherit;
+  }
+  .tech:hover { border-color: var(--cobalt); }
+  .tech[aria-expanded="true"] { background: var(--wash); border-color: var(--cobalt); box-shadow: inset 0 -3px 0 var(--marigold); }
+  .tech-name { display: block; font-size: 15px; font-weight: 600; line-height: 1.2; }
+  .tech-role { display: block; font-size: 13px; line-height: 1.2; color: var(--muted); }
+  .ico { width: 28px; height: 28px; flex: none; }
+  .ico.wide { width: 50px; }
+  .tech-panel { margin: 14px 0 0; padding: 18px 20px; background: var(--wash); border-left: 6px solid var(--marigold); border-radius: 0 14px 14px 0; }
+  .tech-panel[hidden] { display: none; }
+  .tp-head { display: flex; align-items: center; gap: 12px; }
+  .tp-head h3 { margin: 0; font: 700 22px/1.2 var(--display); letter-spacing: -0.01em; }
+  .tp-head .ico { width: 40px; height: 40px; }
+  .tp-head .ico.wide { width: 72px; }
+  .tech-panel p { margin: 10px 0 0; max-width: 64ch; font-size: 16px; }
+  .tech-panel p strong { font-weight: 600; }
+  .tech-panel .link { display: inline-block; margin-top: 12px; }
+  .stack-note { margin: 16px 0 0; font-size: 14px; color: var(--muted); max-width: 62ch; }
+
+  @media (prefers-reduced-motion: reduce) { .meter span { animation: none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-python" viewBox="0 0 24 24"><path fill="#3776AB" d="M11.858 0c-.978.005-1.913.088-2.736.234C6.7.662 6.26 1.558 6.26 3.21v2.182h5.725v.727H4.111c-1.664 0-3.121 1-3.577 2.903-.526 2.181-.549 3.542 0 5.82.407 1.694 1.379 2.902 3.043 2.902h1.969v-2.616c0-1.89 1.635-3.557 3.576-3.557h5.72c1.591 0 2.862-1.31 2.862-2.91v-5.45c0-1.553-1.309-2.718-2.863-2.977A18 18 0 0 0 11.858 0M8.762 1.755c.591 0 1.074.491 1.074 1.095 0 .601-.483 1.087-1.074 1.087A1.08 1.08 0 0 1 7.688 2.85c0-.604.48-1.095 1.074-1.095m9.656 4.364v2.543c0 1.971-1.671 3.63-3.577 3.63H9.122c-1.566 0-2.862 1.34-2.862 2.91v5.452c0 1.551 1.349 2.464 2.862 2.91 1.813.532 3.55.628 5.72 0 1.44-.418 2.862-1.258 2.862-2.91V18.47h-5.719v-.727h8.582c1.664 0 2.284-1.16 2.862-2.903.598-1.793.573-3.518 0-5.819-.41-1.656-1.196-2.903-2.862-2.903zm-3.216 13.807a1.08 1.08 0 0 1 1.074 1.088c0 .604-.48 1.094-1.074 1.094-.592 0-1.075-.49-1.075-1.094 0-.601.483-1.088 1.075-1.088"/></symbol>
+  <symbol id="i-fastapi" viewBox="0 0 24 24"><path fill="#009688" d="M12 .0387C5.3729.0384.0003 5.3931 0 11.9988c-.001 6.6066 5.372 11.9628 12 11.9625 6.628.0003 12.001-5.3559 12-11.9625-.0003-6.6057-5.3729-11.9604-12-11.96m-.829 5.4153h7.55l-7.5805 5.3284h5.1828L5.279 18.5436q2.9466-6.5444 5.892-13.0896"/></symbol>
+  <symbol id="i-uvicorn" viewBox="0 0 24 24"><g fill="none" stroke="#161a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6.5" rx="2"/><rect x="3" y="13.5" width="18" height="6.5" rx="2"/></g><circle cx="7.2" cy="7.25" r="1.1" fill="#161a3d"/><circle cx="7.2" cy="16.75" r="1.1" fill="#161a3d"/></symbol>
+  <symbol id="i-scikit-learn" viewBox="-0.40 5.13 24.80 13.74"><path fill="#F7931E" d="M15.601 5.53c-1.91.035-3.981.91-5.63 2.56-2.93 2.93-2.083 8.53-1.088 9.525.805.804 6.595 1.843 9.526-1.088a9.74 9.74 0 0 0 .584-.643c.043-.292.205-.66.489-1.106a1.848 1.848 0 0 1-.537.176c-.144.265-.37.55-.676.855-.354.335-.607.554-.76.656a.795.795 0 0 1-.437.152c-.35 0-.514-.308-.494-.924-.22.316-.425.549-.612.7a.914.914 0 0 1-.578.224c-.194 0-.36-.09-.496-.273a1.03 1.03 0 0 1-.193-.507 4.016 4.016 0 0 1-.726.583c-.224.132-.47.197-.74.197-.3 0-.543-.096-.727-.288a.978.978 0 0 1-.257-.524v.004c-.3.276-.564.48-.79.611a1.295 1.295 0 0 1-.649.197.693.693 0 0 1-.571-.275c-.145-.183-.218-.43-.218-.739 0-.464.101-1.02.302-1.67.201-.65.445-1.25.733-1.797l.842-.312a.21.21 0 0 1 .06-.013c.063 0 .116.047.157.14.04.095.061.221.061.38 0 .451-.104.888-.312 1.31-.207.422-.532.873-.974 1.352-.018.23-.027.388-.027.474 0 .193.036.345.106.458.071.113.165.169.282.169a.71.71 0 0 0 .382-.13c.132-.084.333-.26.602-.523.028-.418.187-.798.482-1.142.324-.38.685-.569 1.08-.569.206 0 .37.054.494.16a.524.524 0 0 1 .186.417c0 .458-.486.829-1.459 1.114.088.43.32.646.693.646a.807.807 0 0 0 .417-.117c.129-.076.321-.243.575-.497.032-.252.118-.495.259-.728.182-.3.416-.544.701-.73.285-.185.537-.278.756-.278.276 0 .47.127.58.381l.677-.374h.186l-.292.971c-.15.488-.226.823-.226 1.004 0 .19.067.285.202.285.086 0 .181-.045.285-.137.104-.092.25-.232.437-.42v.001c.143-.155.274-.32.392-.494-.19-.084-.285-.21-.285-.375 0-.17.058-.352.174-.545.116-.194.275-.29.479-.29.172 0 .258.088.258.265 0 .139-.05.338-.149.596.367-.04.687-.32.961-.842l.228-.01c1.059-2.438.828-5.075-.83-6.732-1.019-1.02-2.408-1.5-3.895-1.471zm4.725 8.203a8.938 8.938 0 0 1-1.333 2.151 1.09 1.09 0 0 0-.012.147c0 .168.047.309.14.423.092.113.206.17.34.17.296 0 .714-.264 1.254-.787-.001.04-.003.08-.003.121 0 .146.012.368.036.666l.733-.172c0-.2.003-.357.01-.474.01-.157.033-.33.066-.517.02-.11.07-.216.152-.315l.186-.216a5.276 5.276 0 0 1 .378-.397c.062-.055.116-.099.162-.13a.26.26 0 0 1 .123-.046c.055 0 .083.035.083.106 0 .07-.052.236-.156.497-.194.486-.292.848-.292 1.084 0 .175.046.314.136.418a.45.45 0 0 0 .358.155c.365 0 .803-.269 1.313-.808v-.381c-.361.426-.623.64-.784.64-.109 0-.163-.067-.163-.2 0-.1.065-.316.195-.65.19-.486.285-.836.285-1.048a.464.464 0 0 0-.112-.319.36.36 0 0 0-.282-.127c-.165 0-.354.077-.567.233-.213.156-.5.436-.863.84.053-.262.165-.622.335-1.08l-.809.156a6.54 6.54 0 0 0-.399 1.074c-.04.156-.07.316-.092.48a7.447 7.447 0 0 1-.49.45.38.38 0 0 1-.229.08.208.208 0 0 1-.174-.082.352.352 0 0 1-.064-.222c0-.1.019-.214.056-.343.038-.13.12-.373.249-.731l.308-.849zm-17.21-2.927c-.863-.016-1.67.263-2.261.854-1.352 1.352-1.07 3.827.631 5.527 1.7 1.701 4.95 1.21 5.527.632.467-.466 1.07-3.827-.631-5.527-.957-.957-2.158-1.465-3.267-1.486zm12.285.358h.166v.21H15.4zm.427 0h.166v.865l.46-.455h.195l-.364.362.428.684h-.198l-.357-.575-.164.166v.41h-.166zm1.016 0h.166v.21h-.166zm.481.122h.166v.288h.172v.135h-.172v.717c0 .037.006.062.02.075.012.013.037.02.074.02a.23.23 0 0 0 .078-.01v.141a.802.802 0 0 1-.136.014.23.23 0 0 1-.15-.043.15.15 0 0 1-.052-.123v-.79h-.141v-.136h.141zm-3.562.258c.081 0 .15.012.207.038.057.024.1.061.13.11s.045.106.045.173h-.176c-.006-.111-.075-.167-.208-.167a.285.285 0 0 0-.164.041.134.134 0 0 0-.06.117c0 .035.015.065.045.088.03.024.08.044.15.06l.16.039a.47.47 0 0 1 .224.105c.047.046.07.108.07.186a.3.3 0 0 1-.052.175.327.327 0 0 1-.152.116.585.585 0 0 1-.226.041c-.136 0-.24-.03-.309-.088-.069-.059-.105-.149-.109-.269h.176c.004.037.01.065.017.084a.166.166 0 0 0 .034.054c.044.043.112.065.204.065a.31.31 0 0 0 .177-.045.139.139 0 0 0 .067-.119.116.116 0 0 0-.038-.09.287.287 0 0 0-.124-.055l-.156-.038a1.248 1.248 0 0 1-.159-.05.359.359 0 0 1-.098-.061.22.22 0 0 1-.058-.083.32.32 0 0 1-.016-.108c0-.096.036-.174.109-.232a.45.45 0 0 1 .29-.087zm1.035 0a.46.46 0 0 1 .202.043.351.351 0 0 1 .187.212.577.577 0 0 1 .023.126h-.168a.256.256 0 0 0-.078-.168.242.242 0 0 0-.17-.06.248.248 0 0 0-.155.05.306.306 0 0 0-.1.144.662.662 0 0 0-.034.224.58.58 0 0 0 .035.214.299.299 0 0 0 .101.135.261.261 0 0 0 .157.048c.142 0 .227-.084.256-.252h.167a.519.519 0 0 1-.065.22.35.35 0 0 1-.146.138.464.464 0 0 1-.216.048.448.448 0 0 1-.246-.066.441.441 0 0 1-.161-.192.703.703 0 0 1-.057-.293c0-.085.01-.163.032-.233a.522.522 0 0 1 .095-.182.403.403 0 0 1 .15-.117.453.453 0 0 1 .191-.04zm.603.03h.166v1.046H15.4zm1.443 0h.166v1.046h-.166zm-5.05.618c-.08 0-.2.204-.356.611-.155.407-.308.977-.459 1.71.281-.312.509-.662.683-1.05.175-.387.262-.72.262-.999a.455.455 0 0 0-.036-.197c-.025-.05-.056-.075-.093-.075zm4.662 1.797c-.221 0-.431.188-.629.563-.197.376-.296.722-.296 1.038 0 .12.029.216.088.29a.273.273 0 0 0 .223.111c.221 0 .43-.188.625-.565.196-.377.294-.725.294-1.043a.457.457 0 0 0-.083-.29.269.269 0 0 0-.222-.104zm-2.848.007c-.146 0-.285.11-.417.333-.133.222-.2.51-.2.866.566-.159.849-.452.849-.881 0-.212-.077-.318-.232-.318Z"/></symbol>
+  <symbol id="i-numpy" viewBox="0 0 24 24"><path fill="#013243" d="M10.315 4.876L6.3048 2.8517l-4.401 2.1965 4.1186 2.0683zm1.8381.9277l4.2045 2.1223-4.3622 2.1906-4.125-2.0718zm5.6153-2.9213l4.3193 2.1658-3.863 1.9402-4.2131-2.1252zm-1.859-.9329L12.021 0 8.1742 1.9193l4.0068 2.0208zm-3.0401 16.7443V24l4.7107-2.3507-.0053-5.3085zm4.7037-4.2057l-.0052-5.2528-4.6985 2.3356v5.2546zm5.6553-.9845v5.327l-4.0178 2.0052-.0029-5.3028zm0-1.8626V6.4214l-4.0253 2.001.0034 5.2633zM11.2062 11.571L8.0333 9.9756v6.895s-3.8804-8.2564-4.2399-8.998c-.0463-.0957-.2371-.2007-.2858-.2262C2.8118 7.2812.773 6.2485.773 6.2485V18.43l2.8204 1.5076v-6.3674s3.8392 7.3775 3.878 7.458c.0389.0807.4245.8582.8362 1.1314.5485.363 2.8992 1.7766 2.8992 1.7766z"/></symbol>
+  <symbol id="i-html5" viewBox="0 0 24 24"><path fill="#E34F26" d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.23-2.622L5.412 4.41l.698 8.01h9.126l-.326 3.426-2.91.804-2.955-.81-.188-2.11H6.248l.33 4.171L12 19.351l5.379-1.443.744-8.157H8.531z"/></symbol>
+  <symbol id="i-css" viewBox="0 0 24 24"><path fill="#663399" d="M0 0v20.16A3.84 3.84 0 0 0 3.84 24h16.32A3.84 3.84 0 0 0 24 20.16V3.84A3.84 3.84 0 0 0 20.16 0Zm14.256 13.08c1.56 0 2.28 1.08 2.304 2.64h-1.608c.024-.288-.048-.6-.144-.84-.096-.192-.288-.264-.552-.264-.456 0-.696.264-.696.84-.024.576.288.888.768 1.08.72.288 1.608.744 1.92 1.296q.432.648.432 1.656c0 1.608-.912 2.592-2.496 2.592-1.656 0-2.4-1.032-2.424-2.688h1.68c0 .792.264 1.176.792 1.176.264 0 .456-.072.552-.24.192-.312.24-1.176-.048-1.512-.312-.408-.912-.6-1.32-.816q-.828-.396-1.224-.936c-.24-.36-.36-.888-.36-1.536 0-1.44.936-2.472 2.424-2.448m5.4 0c1.584 0 2.304 1.08 2.328 2.64h-1.608c0-.288-.048-.6-.168-.84-.096-.192-.264-.264-.528-.264-.48 0-.72.264-.72.84s.288.888.792 1.08c.696.288 1.608.744 1.92 1.296.264.432.408.984.408 1.656.024 1.608-.888 2.592-2.472 2.592-1.68 0-2.424-1.056-2.448-2.688h1.68c0 .744.264 1.176.792 1.176.264 0 .456-.072.552-.24.216-.312.264-1.176-.048-1.512-.288-.408-.888-.6-1.32-.816-.552-.264-.96-.576-1.2-.936s-.36-.888-.36-1.536c-.024-1.44.912-2.472 2.4-2.448m-11.031.018c.711-.006 1.419.198 1.839.63.432.432.672 1.128.648 1.992H9.336c.024-.456-.096-.792-.432-.96-.312-.144-.768-.048-.888.24-.12.264-.192.576-.168.864v3.504c0 .744.264 1.128.768 1.128a.65.65 0 0 0 .552-.264c.168-.24.192-.552.168-.84h1.776c.096 1.632-.984 2.712-2.568 2.688-1.536 0-2.496-.864-2.472-2.472v-4.032c0-.816.24-1.44.696-1.848.432-.408 1.146-.624 1.857-.63"/></symbol>
+  <symbol id="i-javascript" viewBox="0 0 24 24"><path fill="#F7DF1E" d="M0 0h24v24H0V0zm22.034 18.276c-.175-1.095-.888-2.015-3.003-2.873-.736-.345-1.554-.585-1.797-1.14-.091-.33-.105-.51-.046-.705.15-.646.915-.84 1.515-.66.39.12.75.42.976.9 1.034-.676 1.034-.676 1.755-1.125-.27-.42-.404-.601-.586-.78-.63-.705-1.469-1.065-2.834-1.034l-.705.089c-.676.165-1.32.525-1.71 1.005-1.14 1.291-.811 3.541.569 4.471 1.365 1.02 3.361 1.244 3.616 2.205.24 1.17-.87 1.545-1.966 1.41-.811-.18-1.26-.586-1.755-1.336l-1.83 1.051c.21.48.45.689.81 1.109 1.74 1.756 6.09 1.666 6.871-1.004.029-.09.24-.705.074-1.65l.046.067zm-8.983-7.245h-2.248c0 1.938-.009 3.864-.009 5.805 0 1.232.063 2.363-.138 2.711-.33.689-1.18.601-1.566.48-.396-.196-.597-.466-.83-.855-.063-.105-.11-.196-.127-.196l-1.825 1.125c.305.63.75 1.172 1.324 1.517.855.51 2.004.675 3.207.405.783-.226 1.458-.691 1.811-1.411.51-.93.402-2.07.397-3.346.012-2.054 0-4.109 0-6.179l.004-.056z"/></symbol>
+</svg>
+<div class="wrap">
+  <form id="form" class="ask" role="search" autocomplete="off">
+    <h1><label for="goal" class="lead">I want to</label></h1>
+    <input id="goal" type="text" name="goal" placeholder="become a video editor" maxlength="300" required>
+    <div class="controls">
+      <button class="go" id="go" type="submit">Find my courses</button>
+      <div class="levels" role="radiogroup" aria-label="Course level">
+        <span class="label">Level</span>
+        <label class="pill"><input type="radio" name="level" value="" checked><span>Any</span></label>
+        <label class="pill"><input type="radio" name="level" value="Beginner"><span>Beginner</span></label>
+        <label class="pill"><input type="radio" name="level" value="Intermediate"><span>Intermediate</span></label>
+        <label class="pill"><input type="radio" name="level" value="Advanced"><span>Advanced</span></label>
+      </div>
+    </div>
+    <div class="examples" id="examples"><span>Try</span></div>
+  </form>
+
+  <p id="status" class="sr" role="status"></p>
+  <section id="results" aria-label="Recommended courses"></section>
+
+  <details id="tips" class="tips" open>
+    <summary>Tips for better results</summary>
+    <ol class="tips-list">
+      <li><strong>Say it in your own words.</strong> “Become a video editor” or “start a career in data” works better than a single word.</li>
+      <li><strong>Name the tool or the job.</strong> Photoshop, AutoCAD, Python, SEO or “web designer”. Use whichever you already know.</li>
+      <li><strong>No match? Rephrase.</strong> Swap the tool for the job (“HTML” for “website designer”) or the other way round. The page tells you when nothing fits.</li>
+      <li><strong>Pick a level.</strong> Beginner shows shorter, entry-level courses and Advanced shows the deeper ones. Leave it on Any if you are not sure.</li>
+      <li><strong>Read the highlights.</strong> Skills in yellow are the ones that matched what you typed. “Also offered as” lists other versions of a course, and “Show similar courses” suggests related ones.</li>
+      <li><strong>Check the course page.</strong> The bar compares each result with the best match, so it is not a grade. Fees, batch timings and admission details are on the course page behind “View course”.</li>
+    </ol>
+  </details>
+
+  <p class="note">Your goal is used only to find matching courses and is not saved.</p>
+
+  <footer class="stack" aria-labelledby="stack-title">
+    <h2 id="stack-title">Built with</h2>
+    <p class="stack-hint">Select a tool to see what it does in this project.</p>
+    <ul class="tech-row" id="stack">
+      <li><button type="button" class="tech" data-id="python" aria-expanded="false" aria-controls="tech-panel"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-python"/></svg><span><span class="tech-name">Python</span><span class="tech-role">language</span></span></button></li>
+      <li><button type="button" class="tech" data-id="fastapi" aria-expanded="false" aria-controls="tech-panel"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-fastapi"/></svg><span><span class="tech-name">FastAPI</span><span class="tech-role">web API</span></span></button></li>
+      <li><button type="button" class="tech" data-id="uvicorn" aria-expanded="false" aria-controls="tech-panel"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-uvicorn"/></svg><span><span class="tech-name">Uvicorn</span><span class="tech-role">server</span></span></button></li>
+      <li><button type="button" class="tech" data-id="scikit-learn" aria-expanded="false" aria-controls="tech-panel"><svg class="ico wide" aria-hidden="true" focusable="false"><use href="#i-scikit-learn"/></svg><span><span class="tech-name">scikit-learn</span><span class="tech-role">course matching</span></span></button></li>
+      <li><button type="button" class="tech" data-id="numpy" aria-expanded="false" aria-controls="tech-panel"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-numpy"/></svg><span><span class="tech-name">NumPy</span><span class="tech-role">scoring</span></span></button></li>
+      <li><button type="button" class="tech" data-id="html5" aria-expanded="false" aria-controls="tech-panel"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-html5"/></svg><span><span class="tech-name">HTML5</span><span class="tech-role">this page</span></span></button></li>
+      <li><button type="button" class="tech" data-id="css" aria-expanded="false" aria-controls="tech-panel"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-css"/></svg><span><span class="tech-name">CSS</span><span class="tech-role">styling</span></span></button></li>
+      <li><button type="button" class="tech" data-id="javascript" aria-expanded="false" aria-controls="tech-panel"><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-javascript"/></svg><span><span class="tech-name">JavaScript</span><span class="tech-role">interaction</span></span></button></li>
+    </ul>
+    <div id="tech-panel" class="tech-panel" role="region" aria-live="polite" aria-label="About the selected tool" hidden></div>
+    <p class="stack-note">Course matching runs on the server with scikit-learn (TF-IDF) on an ordinary CPU. No GPU is needed.</p>
+  </footer>
+</div>
+
+<script>
+  // When the page is hosted away from the API, open it as /index.html?api=https://your-api-host
+  const API = (new URLSearchParams(location.search).get("api") || "").replace(/\/$/, "");
+  const FALLBACK_EXAMPLES = ["become a YouTuber", "build AI chatbots", "learn hacking and cyber security", "start a career in data"];
+
+  const $ = (sel) => document.querySelector(sel);
+  const form = $("#form"), goal = $("#goal"), results = $("#results"), statusEl = $("#status"), goBtn = $("#go");
+
+  // The tips start open; the first search folds them away so the results come first. Visitors can reopen them.
+  const tips = $("#tips");
+  let tipsFolded = false;
+  function foldTipsOnce() { if (!tipsFolded) { tips.open = false; tipsFolded = true; } }
+
+  // Small DOM helper. Everything goes in as text, so course data can never inject markup.
+  function h(tag, props = {}, ...kids) {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(props)) {
+      if (k === "class") el.className = v;
+      else if (k === "text") el.textContent = v;
+      else if (v !== false && v != null) el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      el.append(kid instanceof Node ? kid : document.createTextNode(kid));
+    }
+    return el;
+  }
+
+  const currentLevel = () => document.querySelector('input[name="level"]:checked').value;
+  const safeUrl = (u) => (/^https?:\/\//i.test(u || "") ? u : null);
+
+  function courseBlock(c, isTop) {
+    const matched = new Set(c.matched_skills || []);
+    const skills = [...c.skills].sort((a, b) => matched.has(b) - matched.has(a));
+
+    const similarPanel = h("div", { class: "similar", hidden: "" });
+    const similarBtn = h("button", { class: "link", type: "button", "aria-expanded": "false" }, "Show similar courses");
+    similarBtn.addEventListener("click", () => toggleSimilar(c, similarBtn, similarPanel));
+
+    return h("article", { class: isTop ? "top" : "row" },
+      h("h3", { class: "c-title", text: c.title }),
+      h("p", { class: "meta" }, [c.level, c.duration, c.category].map((t) => h("span", { text: t }))),
+      h("div", { class: "meter", role: "img", "aria-label": isTop ? "Best match" : `${c.match} percent as strong as the best match` },
+        h("span", { style: `--s:${Math.max(c.match, 4) / 100}` })),
+      h("div", { class: "match-label", text: isTop ? "Best match" : `${c.match}% as strong as the best match` }),
+      h("p", { class: "why", text: c.why }),
+      h("p", { class: "desc", text: c.description }),
+      h("ul", { class: "chips", "aria-label": "Skills you will learn" },
+        skills.map((s) => h("li", { class: matched.has(s) ? "hit" : "", text: s }))),
+      c.careers.length ? h("p", { class: "careers", text: "Leads to: " + c.careers.join(", ") }) : null,
+      c.variants && c.variants.length
+        ? h("p", { class: "careers" }, "Also offered as: ", c.variants.map((v, k) => {
+            const label = `${v.title} (${v.duration || v.level})`;
+            return [k ? "; " : "", safeUrl(v.url)
+              ? h("a", { href: safeUrl(v.url), target: "_blank", rel: "noopener", text: label })
+              : label];
+          }))
+        : null,
+      h("div", { class: "actions" },
+        safeUrl(c.url) ? h("a", { class: "link", href: safeUrl(c.url), target: "_blank", rel: "noopener" }, "View course") : null,
+        similarBtn),
+      similarPanel);
+  }
+
+  async function toggleSimilar(c, btn, panel) {
+    if (btn.getAttribute("aria-expanded") === "true") {
+      panel.hidden = true;
+      btn.setAttribute("aria-expanded", "false");
+      btn.textContent = "Show similar courses";
+      return;
+    }
+    btn.disabled = true;
+    try {
+      if (!panel.dataset.loaded) {
+        const r = await fetch(`${API}/api/similar/${encodeURIComponent(c.id)}?top_k=3`);
+        if (!r.ok) throw new Error(r.status);
+        const d = await r.json();
+        panel.replaceChildren(
+          h("h4", { text: "Courses with overlapping topics" }),
+          h("ul", {}, d.results.map((s) =>
+            h("li", {}, h("strong", { text: s.title }), h("span", { class: "sub", text: ` (${s.level}, ${s.duration})` })))));
+        panel.dataset.loaded = "1";
+      }
+      panel.hidden = false;
+      btn.setAttribute("aria-expanded", "true");
+      btn.textContent = "Hide similar courses";
+    } catch {
+      panel.replaceChildren(h("p", { text: "Could not load similar courses. Try again in a moment." }));
+      panel.hidden = false;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function render(d) {
+    foldTipsOnce();
+    results.replaceChildren();
+    if (!d.count) {
+      const hint = currentLevel() ? " You can also set Level to Any." : "";
+      statusEl.textContent = "No close match found.";
+      results.append(h("div", { class: "empty" },
+        h("p", { class: "summary", text: `No close match for “${d.query}”.` }),
+        h("p", { text: "Describe the job or the tool instead, such as “video editor”, “Excel” or “Python”, or pick one of the examples above." + hint })));
+      return;
+    }
+    const summary = `${d.count} ${d.count === 1 ? "course fits" : "courses fit"} “${d.query}”`;
+    statusEl.textContent = summary;
+    results.append(h("h2", { class: "summary", text: summary }));
+    d.results.forEach((c, i) => results.append(courseBlock(c, i === 0)));
+  }
+
+  function renderError() {
+    foldTipsOnce();
+    statusEl.textContent = "The recommender could not be reached.";
+    results.replaceChildren(h("div", { class: "error" },
+      h("p", { class: "summary", text: "The recommender is not reachable right now." }),
+      h("p", { text: "Check your connection and try again in a moment." })));
+  }
+
+  async function search(query) {
+    query = query.trim();
+    if (query.length < 2) { goal.focus(); return; }
+    goBtn.disabled = true;
+    goBtn.textContent = "Finding courses…";
+    try {
+      const r = await fetch(`${API}/api/recommend`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query, top_k: 5, level: currentLevel() || null }),
+      });
+      if (!r.ok) throw new Error(r.status);
+      render(await r.json());
+    } catch {
+      renderError();
+    } finally {
+      goBtn.disabled = false;
+      goBtn.textContent = "Find my courses";
+    }
+  }
+
+  form.addEventListener("submit", (e) => { e.preventDefault(); search(goal.value); });
+  document.querySelectorAll('input[name="level"]').forEach((r) =>
+    r.addEventListener("change", () => { if (goal.value.trim().length >= 2) search(goal.value); }));
+
+  function addExamples(list) {
+    const box = $("#examples");
+    list.forEach((text) => {
+      const b = h("button", { type: "button", text });
+      b.addEventListener("click", () => { goal.value = text; search(text); });
+      box.append(b);
+    });
+  }
+
+  // Descriptions for the "Built with" buttons. The icons are inline in this page (the <symbol> sprite at the top),
+  // so no separate logo files are needed.
+  const TECH = {
+      "python": {
+          "name": "Python",
+          "what": "A general-purpose programming language that is widely used for data science and AI.",
+          "job": "Runs everything on the server: it reads the course catalog, does the matching and answers each search.",
+          "url": "https://www.python.org",
+          "link": "python.org"
+      },
+      "fastapi": {
+          "name": "FastAPI",
+          "what": "A modern Python framework for building web APIs.",
+          "job": "Receives your goal from this page, asks the matcher for the best courses and sends the answer back as JSON. It also serves this page.",
+          "url": "https://fastapi.tiangolo.com",
+          "link": "FastAPI docs"
+      },
+      "uvicorn": {
+          "name": "Uvicorn",
+          "what": "A fast server for Python web apps.",
+          "job": "Runs the FastAPI app and handles the connections coming from visitors' browsers.",
+          "url": "https://www.uvicorn.org",
+          "link": "Uvicorn docs"
+      },
+      "scikit-learn": {
+          "name": "scikit-learn",
+          "what": "Python's standard library for classic machine learning.",
+          "job": "Turns every course and your goal into TF-IDF numbers, once on words and once on groups of letters (so a typo like “photshop” still matches), then ranks the courses by cosine similarity. It runs on a normal CPU, with no GPU.",
+          "url": "https://scikit-learn.org",
+          "link": "scikit-learn docs"
+      },
+      "numpy": {
+          "name": "NumPy",
+          "what": "The core Python library for fast number crunching with arrays.",
+          "job": "Holds the similarity scores and sorts the courses from the best match to the weakest. scikit-learn is built on top of it.",
+          "url": "https://numpy.org",
+          "link": "NumPy docs"
+      },
+      "html5": {
+          "name": "HTML5",
+          "what": "The language that describes the structure of a web page.",
+          "job": "Builds this page: the search box, the level buttons, the result cards and this panel.",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/HTML",
+          "link": "MDN: HTML"
+      },
+      "css": {
+          "name": "CSS",
+          "what": "The language that controls how a web page looks.",
+          "job": "Handles the layout, colours and fonts, the animated match bar and the phone-friendly view.",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/CSS",
+          "link": "MDN: CSS"
+      },
+      "javascript": {
+          "name": "JavaScript",
+          "what": "The programming language of the web browser.",
+          "job": "Sends your goal to the API, draws the result cards and runs the “Show similar courses” and tool buttons. Plain JavaScript, with no framework and no build step.",
+          "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+          "link": "MDN: JavaScript"
+      }
+  };
+
+  const techPanel = $("#tech-panel");
+  const techButtons = [...document.querySelectorAll("#stack .tech")];
+
+  function showTech(id) {
+    const btn = techButtons.find((b) => b.dataset.id === id);
+    const wasOpen = btn.getAttribute("aria-expanded") === "true";
+    techButtons.forEach((b) => b.setAttribute("aria-expanded", "false"));
+    if (wasOpen) { techPanel.hidden = true; return; }   // selecting the open tool again closes the panel
+    const t = TECH[id];
+    btn.setAttribute("aria-expanded", "true");
+    techPanel.replaceChildren(
+      h("div", { class: "tp-head" }, btn.querySelector("svg").cloneNode(true), h("h3", { text: t.name })),
+      h("p", {}, h("strong", { text: "What it is: " }), t.what),
+      h("p", {}, h("strong", { text: "Its job here: " }), t.job),
+      h("a", { class: "link", href: t.url, target: "_blank", rel: "noopener", text: `${t.link} \u2197` }));
+    techPanel.hidden = false;
+  }
+  techButtons.forEach((b) => b.addEventListener("click", () => showTech(b.dataset.id)));
+  showTech("scikit-learn");   // start with the main ML tool open
+
+  fetch(`${API}/api/meta`)
+    .then((r) => (r.ok ? r.json() : Promise.reject()))
+    .then((m) => addExamples(m.examples))
+    .catch(() => addExamples(FALLBACK_EXAMPLES));
+</script>
+</body>
+</html>

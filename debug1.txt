@@ -1,0 +1,93 @@
+1 course pages to process
+[1/1] best-nodejs-master-course
+
+--- headings found ---
+h1: Node.js Course – Master  [0 list items, 12 text blocks, 1 images]
+h2: About our Node JS Course  [0 list items, 0 text blocks, 0 images]
+h3: Why Join Node JS training institute in Delhi?  [4 list items, 3 text blocks, 0 images]
+h2: Node JS course entry requirements  [2 list items, 1 text blocks, 0 images]
+h3: Who can join this Node JS course in Delhi?  [0 list items, 0 text blocks, 0 images]
+h2: Get the curriculum of the course.  [0 list items, 0 text blocks, 0 images]
+h2: Node JS course structure and modules  [36 list items, 35 text blocks, 0 images]
+h3: Apply for free trial session.  [0 list items, 0 text blocks, 0 images]
+h2: Node JS course learning outcomes  [4 list items, 3 text blocks, 0 images]
+h2: Career opportunities  [0 list items, 1 text blocks, 0 images]
+      careers section markup: p
+      text blocks found: ['Node.js Programmer and Node.js Developer']
+h2: Other Web Development Courses  [6 list items, 6 text blocks, 0 images]
+h3: Success Stories  [3 list items, 8 text blocks, 3 images]
+h3: Instructors  [1 list items, 0 text blocks, 1 images]
+h3: Deepak Bhadauria  [1 list items, 2 text blocks, 1 images]
+h3: Nishu Tomar  [1 list items, 2 text blocks, 1 images]
+h3: Ravi Bhadauria  [1 list items, 2 text blocks, 1 images]
+h3: Promila Dhanderwal  [1 list items, 2 text blocks, 0 images]
+h3: Anuradha Sengar  [1 list items, 2 text blocks, 0 images]
+h3: Sahil Sharma  [0 list items, 2 text blocks, 0 images]
+h3: Why ADMEC ?  [0 list items, 5 text blocks, 0 images]
+h3: let us contact you  [0 list items, 2 text blocks, 0 images]
+h3: Our Students Works  [1 list items, 1 text blocks, 1 images]
+h3: Web Templates  [1 list items, 2 text blocks, 0 images]
+h3: Html 5 Websites  [1 list items, 2 text blocks, 1 images]
+h3: App UI Designs  [1 list items, 2 text blocks, 0 images]
+h3: Web Ads  [1 list items, 2 text blocks, 0 images]
+h3: JavaScript and Frameworks  [0 list items, 1 text blocks, 0 images]
+h2: More Web Development Courses  [0 list items, 0 text blocks, 0 images]
+h3: Laravel Course – Master  [0 list items, 5 text blocks, 1 images]
+h3: Claude AI Course in Delhi – Master Agentic AI, Prompt Engineering & Automation Training  [0 list items, 4 text blocks, 1 images]
+h3: Microsoft SSRS Training  [0 list items, 5 text blocks, 1 images]
+h3: Node.js Course – Standard  [0 list items, 12 text blocks, 0 images]
+h3: Must Check  [0 list items, 12 text blocks, 0 images]
+h3: Most Popular Courses In  [0 list items, 13 text blocks, 0 images]
+h3: Trending Courses  [0 list items, 6 text blocks, 0 images]
+h3: Training Partners  [0 list items, 5 text blocks, 0 images]
+h3: Request A Demo  [0 list items, 1 text blocks, 0 images]
+h3: Request Brochure  [0 list items, 1 text blocks, 0 images]
+h3: Apply Now  [0 list items, 0 text blocks, 0 images]
+
+--- extracted ---
+{
+  "raw": {
+    "url": "https://www.admecindia.co.in/course/best-nodejs-master-course/",
+    "slug": "best-nodejs-master-course",
+    "source_title": "Node.js Course – Master",
+    "description": "Join certified Node JS training institute in Delhi. We offer best Node JS course for 2 months on both fast track and regular modes.",
+    "duration_text": "02 Months",
+    "course_type": "Certificate",
+    "training_type": "Classroom, Online",
+    "training_mode": "Fast Track, Regular, Weekends",
+    "tools": [],
+    "outcomes": [
+      "Deployment and making node applications using Express Framework",
+      "Create scalable and responsive web apps",
+      "MongoDB and MySQL • Development of Rest API"
+    ],
+    "topics": [],
+    "careers": [
+      "Node.js Programmer and Node.js Developer"
+    ],
+    "eligibility": [
+      "Prior working knowledge in HTML and CSS",
+      "Advanced knowledge of JavaScript is highly expected, if not then get our JavaScript course included along with it"
+    ]
+  },
+  "course": {
+    "id": "best-nodejs-master-course",
+    "title": "Node.js Course – Master",
+    "category": "Programming",
+    "level": "Intermediate",
+    "duration": "2 months",
+    "description": "Join certified Node JS training institute in Delhi. We offer best Node JS course for 2 months on both fast track and regular modes.",
+    "skills": [],
+    "topics": [],
+    "careers": [
+      "Node.js Programmer and Node.js Developer"
+    ],
+    "url": "https://www.admecindia.co.in/course/best-nodejs-master-course/",
+    "group": "node-js"
+  },
+  "level_source": "title",
+  "flags": [
+    "no_skills",
+    "no_topics"
+  ]
+}

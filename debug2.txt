@@ -1,0 +1,123 @@
+1 course pages to process
+[1/1] best-ux-ui-design-course
+
+--- headings found ---
+h1: Best UX Design Course in Delhi to Jumpstart Your Career  [0 list items, 5 text blocks, 1 images]
+h3: UX Design Master Course  [0 list items, 11 text blocks, 0 images]
+h2: Overview of our UX design course in Delhi  [0 list items, 0 text blocks, 0 images]
+h3: UX design is hot and it is amazing  [0 list items, 2 text blocks, 0 images]
+h3: Prerequisites for UX design course  [2 list items, 0 text blocks, 0 images]
+h3: Who can join our UX design institute in Rohini?  [0 list items, 0 text blocks, 0 images]
+h3: Why join our UX design institute for UX course?  [6 list items, 1 text blocks, 0 images]
+h2: Know more about this course  [0 list items, 0 text blocks, 0 images]
+h2: Software and Tools in UX design course  [0 list items, 0 text blocks, 16 images]
+h3: Check our 12-month UX Design course  [0 list items, 2 text blocks, 2 images]
+h3: Apply for free trial session.  [0 list items, 0 text blocks, 0 images]
+h2: UX course structure and modules  [0 list items, 3 text blocks, 0 images]
+h3: Module I- Fundamentals of Visual Design  [10 list items, 11 text blocks, 0 images]
+h3: Module 2 – AI-Powered Module  [6 list items, 7 text blocks, 0 images]
+h3: Module 3 – UX Design Basics, Research and Planning  [17 list items, 20 text blocks, 0 images]
+h3: Module 4 – UI Design Fundamentals, Design Planning  [20 list items, 21 text blocks, 0 images]
+h3: Module 5 – Digital Designing and Web Programming  [0 list items, 4 text blocks, 0 images]
+h4: Key takeaways of this UX design course  [12 list items, 14 text blocks, 0 images]
+h3: Capstone Project on UX Design  [0 list items, 3 text blocks, 0 images]
+h2: Download Brochure of the Course  [0 list items, 0 text blocks, 0 images]
+h3: Career opportunities after advanced UX course  [0 list items, 1 text blocks, 0 images]
+      careers section markup: div.gdlr-core-pbf-element div.gdlr-core-text-box-item div.gdlr-core-text-box-item-content p strong br div.gdlr-core-pbf-element div.gdlr-core-title-item div.gdlr-core-title-item-title-wrap
+      text blocks found: ['UX design institute in Rohini']
+h3: Courses similar to UX design course  [5 list items, 10 text blocks, 0 images]
+h3: Why ADMEC for UX Design Courses  [0 list items, 5 text blocks, 0 images]
+h3: let us contact you  [0 list items, 2 text blocks, 0 images]
+h2: Learning Outcomes  [0 list items, 0 text blocks, 0 images]
+h3: 99% hiring rate  [0 list items, 0 text blocks, 0 images]
+h3: A job in 30 days  [0 list items, 0 text blocks, 0 images]
+h3: Higher salary  [0 list items, 0 text blocks, 0 images]
+h3: UX Designing Success Stories  [3 list items, 8 text blocks, 3 images]
+h3: Instructors of UX Design Course  [1 list items, 0 text blocks, 1 images]
+h3: Deepak Bhadauria  [1 list items, 2 text blocks, 1 images]
+h3: Nishu Tomar  [1 list items, 2 text blocks, 1 images]
+h3: Ravi Bhadauria  [1 list items, 2 text blocks, 1 images]
+h3: Promila Dhanderwal  [1 list items, 2 text blocks, 0 images]
+h3: Anuradha Sengar  [1 list items, 2 text blocks, 0 images]
+h3: Sahil Sharma  [0 list items, 2 text blocks, 0 images]
+h3: UX Design Students Projects  [1 list items, 1 text blocks, 1 images]
+h3: App UI Designs  [1 list items, 2 text blocks, 1 images]
+h3: Web Templates  [1 list items, 2 text blocks, 0 images]
+h3: Html 5 Websites  [1 list items, 2 text blocks, 0 images]
+h3: Color Correction  [1 list items, 2 text blocks, 0 images]
+h3: Web Ads  [0 list items, 1 text blocks, 0 images]
+h3: Similar to This UX Design Course in Delhi  [0 list items, 1 text blocks, 1 images]
+h3: Best Sketch App Course in Delhi  [0 list items, 5 text blocks, 1 images]
+h3: Adobe Illustrator Course – Master  [0 list items, 5 text blocks, 1 images]
+h3: Adobe Photoshop Master – Web  [0 list items, 5 text blocks, 1 images]
+h3: Master Plus UX Design Diploma in Delhi to Advance Your Skills and Career  [0 list items, 11 text blocks, 0 images]
+h3: Must Check  [0 list items, 12 text blocks, 0 images]
+h3: Most Popular Courses In  [0 list items, 13 text blocks, 0 images]
+h3: Trending Courses  [0 list items, 6 text blocks, 0 images]
+h3: Training Partners  [0 list items, 5 text blocks, 0 images]
+h3: Request A Demo  [0 list items, 1 text blocks, 0 images]
+h3: Request Brochure  [0 list items, 1 text blocks, 0 images]
+h3: Apply Now  [0 list items, 0 text blocks, 0 images]
+
+--- extracted ---
+{
+  "raw": {
+    "url": "https://www.admecindia.co.in/course/best-ux-ui-design-course/",
+    "slug": "best-ux-ui-design-course",
+    "source_title": "Best UX Design Course in Delhi to Jumpstart Your Career",
+    "description": "Join us to be a UX designer today with placement. This UX design course in Delhi is the best course for you from ADMEC Multimedia Institute.",
+    "duration_text": "06 Months",
+    "course_type": "Diploma",
+    "training_type": "Classroom, Online",
+    "training_mode": "Fast Track, Regular, Weekends",
+    "tools": [
+      "Photoshop Course in Rohini",
+      "Illustrator course in Rohini",
+      "Adobe XD",
+      "Figma course",
+      "miro software",
+      "AI Tools",
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "matte painting",
+      "commercial art",
+      "visual grammar"
+    ],
+    "outcomes": [],
+    "topics": [],
+    "careers": [
+      "UX design institute in Rohini"
+    ],
+    "eligibility": [
+      "Graduation in any stream with knowledge of computer basics and internet",
+      "Interest in sketching, social connectivity, and research-based mindset expected"
+    ]
+  },
+  "course": {
+    "id": "best-ux-ui-design-course",
+    "title": "UX Design Course",
+    "category": "Design",
+    "level": "Intermediate",
+    "duration": "6 months",
+    "description": "Join us to be a UX designer today with placement. This UX design course in Delhi is the best course for you from ADMEC Multimedia Institute.",
+    "skills": [
+      "Photoshop Course in Rohini",
+      "Illustrator course in Rohini",
+      "Adobe XD",
+      "Figma course",
+      "miro software",
+      "AI Tools"
+    ],
+    "topics": [],
+    "careers": [
+      "UX design institute in Rohini"
+    ],
+    "url": "https://www.admecindia.co.in/course/best-ux-ui-design-course/",
+    "group": "ux-ui-design"
+  },
+  "level_source": "duration",
+  "flags": [
+    "no_topics"
+  ]
+}
